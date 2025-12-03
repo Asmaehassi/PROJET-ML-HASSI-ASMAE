@@ -1,33 +1,21 @@
-#  **Projet Machine Learning — Analyse de la Santé Mentale**
-**Étudiante : Asmae Hassi**  
-**Module : Data Science / Machine Learning**    
-
+#  **Projet Machine Learning : Analyse de la Santé Mentale**
+# **Asmae Hassi**  
+ 
 
 ---
 
-#  **1. Introduction**
-
-Cette étude consiste à analyser un dataset portant sur des patients en suivi psychiatrique, afin de prédire l’issue d’un traitement mental (amélioration ou non).  
-L’objectif est de transformer des données brutes en informations exploitables et en modèle prédictif performant.  .
-
-Le dataset utilisé dans ce projet provient de la plateforme Kaggle sous le nom “Mental Health Diagnosis and Treatment Monitoring”.
+## 1. Introduction
 
 
-Ce dataset est adapté pour un projet de Machine Learning car :
+Cette étude vise à analyser un ensemble de données portant sur des patients suivis en santé mentale, dans le but de prédire l’issue de leur traitement, définie comme une amélioration ou une non-amélioration. L’objectif est de transformer des données brutes en informations exploitables et de développer un modèle prédictif fiable permettant d’anticiper l’évolution clinique des patients.
 
-Il possède des variables explicatives variées (cliniques, psychologiques, comportementales).
+Le dataset utilisé, intitulé “Mental Health Diagnosis and Treatment Monitoring” et issu de la plateforme Kaggle, regroupe des variables cliniques, psychologiques et comportementales permettant de décrire l’état de chaque patient. Ce jeu de données se prête particulièrement bien à un projet de Machine Learning supervisé, car il contient une variable cible clairement définie (Outcome), exprimée sous forme binaire, ainsi qu’un ensemble de variables explicatives diversifiées, cohérentes et suffisamment structurées pour permettre un prétraitement efficace.
 
-La variable cible est claire et binaire, facilitant la mise en place d’un modèle supervisé.
+L’intérêt de ce dataset réside dans sa capacité à représenter des problématiques réelles en santé mentale, notamment à travers des mesures telles que la sévérité des symptômes, le niveau de stress, la qualité du sommeil, la progression du traitement ou encore l’adhésion thérapeutique. L’objectif principal de son exploitation est de modéliser et prédire l’évolution d’un patient en fonction de ces indicateurs, afin d’identifier les facteurs influençant le succès du traitement et d’appuyer la prise de décision clinique.
 
-Les données sont propres et cohérentes, permettant un prétraitement simple.
+ ### Problématique
 
-Il permet d’explorer des problématiques réelles en santé mentale.
-
-L’objectif principal de ce dataset est d’évaluer l’évolution du patient au travers de variables cliniques, psychologiques et comportementales, afin de prédire l’issue finale du traitement (“Outcome”).
-
-La thématique choisie est :  
-
- **Santé : Analyse de données liées à la santé mentale.**
+ Peut-on prédire l’évolution d’un patient en santé mentale (amélioration ou non) à partir de données psychologiques, physiologiques et comportementales ?
  
 
 ## 2. Description du Dataset
@@ -35,7 +23,7 @@ La thématique choisie est :
 Le dataset *Mental Health Diagnosis and Treatment Monitoring* contient **500 lignes et 17 colonnes**.  
 Les données décrivent des patients, leurs symptômes, leur traitement et l’issue observée. :contentReference[oaicite:0]{index=0}
 
-### 3. Structure des données  
+## 3. Structure des données  
 
 
 | Colonne | Type | Description |
@@ -60,7 +48,18 @@ Les données décrivent des patients, leurs symptômes, leur traitement et l’i
 
 Ce dataset a été conçu pour étudier l’évolution des patients tout au long du traitement, en associant des variables cliniques et comportementales au résultat final (“outcome”). :contentReference[oaicite:1]{index=1}
 
+ ## Objectifs du projet
+
+- Identifier les variables les plus influentes dans l’évolution d’un patient.
+
+- Construire et comparer plusieurs modèles prédictifs (Logistic Regression, Random Forest, XGBoost).
+
+- Optimiser les performances du modèle le plus performant via GridSearchCV.
+
+- Évaluer les performances via les métriques standards : accuracy, F1-score, matrice de confusion.
+
 ---
+## Méthodologie
 
 ##  4. Prétraitement des données
 
@@ -71,13 +70,42 @@ Les étapes principales de nettoyage et de prétraitement ont été :
 - **Encodage des variables catégorielles**, notamment `gender` et `outcome`
 - **Standardisation des variables numériques** pour faciliter l’apprentissage des modèles
 - **Séparation en ensembles d’entraînement (80%) et de test (20%)**
+- #### Encodage
+
+- Outcome encodé en binaire via LabelEncoder.
+
+- Gender encodé en valeurs numériques (0/1).
+
+### Normalisation
+
+- Utilisation de StandardScaler pour homogénéiser l’échelle des variables numériques.
+
+#### Justification : 
+- nécessaire pour les modèles sensibles aux valeurs (Logistic Regression, SVM, XGBoost).
+### Colonnes supprimées & justification
+
+#### Les colonnes suivantes ont été supprimées car :
+
+- elles n’étaient pas exploitables,
+
+- elles ne contribuaient pas à la performance prédictive
+
+## Colonnes supprimées :
+
+- Patient IDv
+- Diagnosis
+- Medication
+- Therapy Type
+- Treatment Start Date
+- AI-Detected Emotional Stat
+
 
 ---
-#  5.Code utilisé et description
+##  5.Implémentation Technique et Description du Code
 Dans cette section, nous présentons l’ensemble des blocs de code développés pour mener à bien le projet de Machine Learning. Chaque portion de code est accompagnée d’une brève description permettant de comprendre son rôle dans la chaîne de traitement : préparation des données, exploration, modélisation, optimisation et évaluation.
 L’objectif est d’exposer clairement la démarche méthodologique suivie et de justifier les choix techniques réalisés, conformément au cahier des charges.
 
-## 5.1 Importation des librairies
+### 5.1 Importation des librairies
 
  ```import numpy as np
 import pandas as pd
@@ -104,7 +132,7 @@ Ce bloc importe toutes les librairies nécessaires pour :
 
 - Mesurer la performance (accuracy, classification report)
   
-## 5.2 Chargement du dataset
+### 5.2 Chargement du dataset
 
   
 ```url = "https://raw.githubusercontent.com/Asmaehassi/PROJET-ML-HASSI-ASMAE/main/mental_health_diagnosis_treatment_.csv"
@@ -113,7 +141,7 @@ dataset.head()
 ```
 
 Le dataset est importé directement depuis GitHub pour faciliter l’exécution en ligne.
-## 5.3 Nettoyage (Suppression des colonnes inutiles)
+### 5.3 Nettoyage (Suppression des colonnes inutiles)
 ```
 listDrop = ["Patient ID", "Diagnosis", "Medication", "Therapy Type", 
             "Treatment Start Date", "AI-Detected Emotional State"]
@@ -124,7 +152,7 @@ for col in listDrop:
 ```
 
 Ces colonnes contiennent des informations non pertinentes ou difficilement exploitables par le modèle.
-## 5.4 Séparation des variables explicatives et de la cible
+### 5.4 Séparation des variables explicatives et de la cible
 
 ```X = dataset[["Age","Gender","Symptom Severity (1-10)","Mood Score (1-10)",
              "Sleep Quality (1-10)","Physical Activity (hrs/week)",
@@ -139,7 +167,7 @@ X contient les variables utilisées pour prédire
 
 y est la variable cible ("Outcome")
 
-##  Encodage des variables catégorielles
+###  Encodage des variables catégorielles
 
 ```le = LabelEncoder()
 y = le.fit_transform(dataset["Outcome"])
@@ -148,7 +176,7 @@ X["Gender"] = LabelEncoder().fit_transform(X["Gender"])
 
 Les algorithmes nécessitent des valeurs numériques → on transforme le texte en chiffres.
 
-##  Séparation Train / Test
+###  Séparation Train / Test
 
 ```X_train, X_test, y_train, y_test = train_test_split(
     X, y, train_size=0.8, test_size=0.2, random_state=42
@@ -161,7 +189,7 @@ Le dataset est divisé en :
 
 20% test
 
-##  Standardisation des variables
+###  Standardisation des variables
 ```
 scaler = StandardScaler()
 
@@ -172,8 +200,8 @@ X_test.iloc[:, cols_to_scale] = scaler.transform(X_test.iloc[:, cols_to_scale])
 
 Les variables numériques sont normalisées pour améliorer les performances des modèles linéaires.
 
-# 6. Analyse Exploratoire (EDA)
-## 6.1 Histogrammes
+## 6. Analyse Exploratoire (EDA)
+### 6.1 Histogrammes
    
 ```dataset.hist(figsize=(12,8))
 plt.show()
@@ -181,7 +209,7 @@ plt.show()
 
 Visualise la répartition des valeurs (âge, stress, humeur, sommeil…).
 
-## 6.2 Boxplots
+### 6.2 Boxplots
 
 ```Plt.figure(figsize=(10,6))
 sns.boxplot(data=dataset)
@@ -192,7 +220,7 @@ plt.show()
 
 Permet d’identifier les outliers et les variations dans les variables.
 
-## 6.3 Heatmap (corrélations)
+### 6.3 Heatmap (corrélations)
 
 ```plt.figure(figsize=(10,8))
 sns.heatmap(dataset.corr(), annot=True, cmap="coolwarm")
@@ -206,7 +234,7 @@ Treatment Progress et Outcome
 
 Stress et qualité du sommeil
 
- # 7. Modélisation (Machine Learning)
+ ## 7. Modélisation (Machine Learning)
  
 Trois modèles ont été testés conformément au cahier des charges.
 
@@ -255,7 +283,7 @@ print("Random Forest Accuracy :", accuracy_score(y_test, y_pred_rf))
 
 Modèle basé sur plusieurs arbres de décision → robuste et fiable.
 
- ## 7.5 Optimisation des hyperparamètres (GridSearchCV)
+ ### 7.5 Optimisation des hyperparamètres (GridSearchCV)
 
 ```from sklearn.model_selection import GridSearchCV
 
@@ -283,7 +311,7 @@ Cette étape identifie automatiquement les meilleurs paramètres pour XGBoost.
 
 
 
-##   Interprétation des histogrammes 
+#   Interprétation des histogrammes 
 
 L’analyse des distributions à travers les histogrammes met en évidence plusieurs caractéristiques importantes du dataset, essentielles pour comprendre le comportement des variables et la qualité des données avant modélisation.
 
@@ -434,7 +462,8 @@ Dans ce dataset, les valeurs observées sont globalement faibles, ce qui traduit
 
 ##  Principales Observations
 
-###   Corrélations faibles à négligeables  
+###   Corrélations faibles à négligeables 
+
 La majorité des coefficients sont proches de zéro, indiquant l’absence de relation linéaire significative.
 
 - **Symptom Severity** présente des corrélations très faibles avec toutes les autres variables (**|r| < 0.05**).  
@@ -491,5 +520,53 @@ Si l’objectif est de prédire **Symptom Severity** ou **Treatment Progress**,
  ces variables semblent peu corrélées aux autres, ce qui réduit la capacité explicative des simples modèles linéaires.
 
 ---
+## Résultats & Discussion 
+
+<img width="547" height="278" alt="image" src="https://github.com/user-attachments/assets/5b0dc9b5-e5b4-4d6f-9402-dd78b770f812" />
+
+
+Le modèle XGBoost présente une performance globalement médiocre, avec une précision (accuracy) de seulement **0,31**, ce qui signifie qu'il ne parvient à prédire correctement la classe d'appartenance que pour environ **31%** des observations. Cette performance est extrêmement faible, se situant pratiquement au niveau d'une prédiction aléatoire (qui, pour un problème à trois classes équilibrées, aurait une accuracy attendue d'environ **33%**). Le rapport de classification par classe révèle que le modèle ne parvient à obtenir de scores de précision, de rappel (recall) et de F1-score que dans une fourchette de **0,25** à **0,36** pour chacune des trois classes, sans qu'aucune classe ne se distingue par une performance nettement supérieure. Cette uniformité dans la médiocrité des scores suggère que le modèle ne parvient pas à identifier de motifs distinctifs ou de relations solides dans les données pour discriminer efficacement les classes.
+
+Ce résultat indique qu'une approche plus approfondie est nécessaire. Avant d'envisager un modèle plus complexe, il convient de vérifier la qualité du prétraitement des données, d'explorer l'importance des variables pour identifier les prédicteurs les plus informatifs, et de réfléchir à un éventuel feature engineering pour créer de nouvelles variables plus discriminantes. Une optimisation rigoureuse des hyperparamètres et une validation croisée stricte pourraient également améliorer les performances, mais la racine du problème semble résider dans la nature même des données ou dans la définition de la problématique prédictive.
+
+
+
+**La matrice de confusion révèle une dispersion importante des prédictions :**
+
+<img width="511" height="435" alt="image" src="https://github.com/user-attachments/assets/bacaf81c-494c-498c-8eef-7446fd11d649" />
+
+
+- forte confusion entre les trois catégories
+
+- absence d’un schéma clair de classification
+
+Ces résultats soulignent l’hypothèse que les variables disponibles, bien qu’intéressantes, ne suffisent probablement pas à caractériser de manière robuste l’évolution clinique des patients. Il est également possible que le dataset contienne un niveau élevé de bruit, ou que les variables soient corrélées entre elles de manière complexe mais non suffisamment informative pour permettre une séparation nette des classes.
+
+# Conclusion : Limites du modèle et pistes d'amélioration
+
+L’étude réalisée sur le dataset *Mental Health Diagnosis and Treatment Monitoring* a permis de développer un modèle prédictif visant à anticiper l’issue du traitement psychothérapeutique des patients. Les résultats montrent que certaines variables, telles que le niveau de stress, la progression du traitement ou encore la sévérité des symptômes, jouent un rôle important dans la compréhension de l’évolution clinique.
+
+Cependant, plusieurs limites doivent être prises en considération :
+
+##  Limites du modèle  
+- **Taille réduite du dataset :** Le nombre d’observations reste limité, ce qui réduit la capacité du modèle à généraliser et augmente le risque de surapprentissage.  
+- **Corrélations faibles entre variables :** Les relations linéaires étant globalement faibles, les modèles simples (régression logistique, SVM linéaire) peuvent avoir du mal à capturer des patterns complexes.  
+- **Variables auto-rapportées :** Plusieurs mesures (mood score, sleep quality, stress level) reposent sur des déclarations personnelles, éventuellement sujettes à des biais ou des imprécisions.  
+- **Absence de variables cliniques détaillées :** Des informations médicales essentielles (comorbidités, antécédents, médicaments spécifiques) ne sont pas incluses, limitant la profondeur de l’analyse.  
+- **Modèle statique :** Le dataset est transversal et ne reflète pas l’évolution des patients dans le temps, ce qui réduit la capacité à modéliser des trajectoires thérapeutiques.
+
+##  Pistes d'amélioration  
+- **Enrichissement des données :** Ajouter des variables cliniques, comportementales ou contextuelles permettrait d’obtenir un modèle plus robuste et explicatif.  
+- **Collecte longitudinale :** Un suivi temporel (données hebdomadaires) permettrait d’utiliser des modèles séquentiels plus pertinents pour la santé mentale.  
+- **Augmentation de la taille du dataset :** Recueillir davantage d’observations améliorerait la précision et la stabilité du modèle.  
+- **Tests de modèles non linéaires :** Des algorithmes tels que Random Forest, Gradient Boosting ou XGBoost pourraient mieux capturer les interactions complexes.  
+- **Techniques de régularisation :** Elles permettraient de réduire le surapprentissage et d’améliorer la généralisation.  
+- **Analyse de sensibilité :** Étudier l’impact individuel de chaque variable aiderait à comprendre plus finement les facteurs influençant l’Outcome.
+
+##  Conclusion générale  
+Malgré certaines limites, le modèle développé offre une première vision intéressante de l’impact de différentes variables psychologiques et comportementales sur l’évolution du traitement. Les résultats mettent en lumière l’importance de facteurs tels que le stress, l’adhésion thérapeutique et la progression du traitement. L’intégration de données plus riches et de modèles plus avancés permettrait de renforcer la précision des prédictions et d’améliorer l’aide à la décision dans le domaine de la santé mentale.
+
+---
+
 
 
