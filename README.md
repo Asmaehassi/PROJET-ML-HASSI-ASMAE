@@ -17,6 +17,4 @@ Il comprend :
 - Python 3.x  
 - Librairies : pandas, numpy, scikit-learn, matplotlib, seaborn  
 
-### Installer les dépendances  
-```bash
-pip install -r requirements.txt
+
